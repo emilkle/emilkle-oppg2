@@ -22,7 +22,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  GH_TOKEN: ${{ github.token }}
   WORKING_DIR: .
   REVIEWER: "emilkle"
   ASSIGNEE: "emilkle"
@@ -54,7 +54,7 @@ jobs:
           uses: aquasecurity/tfsec-action@v1.0.3
           with:
             working_directory: ${{ env.WORKING_DIR }}
-            github_token: ${{ env.GITHUB_TOKEN }}
+            github_token: ${{ env.GH_TOKEN }}
     
         - name: Terraform workspace select dev or terraform workspace new dev 
           run: terraform workspace select dev || terraform workspace new dev
