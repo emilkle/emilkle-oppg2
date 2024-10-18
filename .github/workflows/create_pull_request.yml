@@ -1,0 +1,29 @@
+name: Create Pull Request for Environment Branches
+
+on:
+  push:
+    branches:
+      - feature/*
+      - fix/*
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Create Pull Request to Dev
+        run: |
+          gh pr create --base dev --head ${{ github.ref_name }} --title "Auto PR: Merge ${{ github.ref_name }} to dev" \
+          --body "Automatic pull request created by GitHub Actions to merge changes from ${{ github.ref_name }} to dev." \
+          --reviewer "emilkle" \
+          --assignee "emilkle"
+          
+      - name: Remove Branch After Approval
+        if: success()
+        run: |
+            gh pr merge --auto --squash --delete-branch
