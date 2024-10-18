@@ -1,4 +1,4 @@
-name: Apply onfrastructure to dev and stage workspaces
+name: Apply Infrastructure to dev and stage Workspaces
 
 on:
   pull_request:
