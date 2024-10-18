@@ -1,0 +1,124 @@
+name: Apply onfrastructure to dev and stage workspaces
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - 'emilkle-oppg2/**'
+  workflow_dispatch:
+    inputs:
+      action_type:
+        description: 'What terraform action do you want to perform? (apply/destroy)'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - 'apply'
+          - 'destroy'
+
+env: 
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  WORKING_DIR: .
+  REVIEWER: "emilkle"
+  ASSIGNEE: "emilkle"
+
+# This pipline will apply infrastructure to all workspaces except prod
+
+jobs:
+    dev_stage:
+      runs-on: ubuntu-22.04
+      steps:
+        - name: Checkout  
+          uses: actions/checkout@v4
+              
+        - name: Terraform init
+          run: terraform init
+          working-directory: ${{ env.WORKING_DIR }}
+          
+        - name: Terraform fmt
+          run: terraform fmt
+          working-directory: ${{ env.WORKING_DIR }}  
+  
+        - name: Terraform validate
+          run: terraform validate
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - uses: actions/checkout@master
+        - name: tfsec
+    
+          uses: aquasecurity/tfsec-action@v1.0.3
+          with:
+            working_directory: ${{ env.WORKING_DIR }}
+            github_token: ${{ env.GITHUB_TOKEN }}
+    
+        - name: Terraform workspace select dev or terraform workspace new dev 
+          run: terraform workspace select dev || terraform workspace new dev
+          working-directory: ${{ env.WORKING_DIR }}
+
+        - name: Terraform plan dev 
+          if: github.event.inputs.action_type == 'apply'
+          run: terraform plan
+          working-directory: ${{ env.WORKING_DIR }}
+    
+        - name: Terraform apply dev 
+          if: github.event.inputs.action_type == 'apply'
+          run: terraform apply -auto-approve
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Terraform destroy dev 
+          if: github.event.inputs.action_type == 'destroy'
+          run: terraform destroy -auto-approve
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Create Pull Request from dev to stage
+          if: github.event.inputs.action_type == 'apply'
+          run: |
+            sudo apt-get install gh -y 
+            gh pr create --base stage --head dev --title "Auto PR: Promote dev to stage" \
+            --body "Automatic pull request created by GitHub Actions to promote changes from dev to stage." \
+            --reviewer ${{ env.REVIEWER }} \
+            --assignee ${{ env.ASSIGNEE }}
+  
+    stage_prod:
+      needs: dev_stage
+      runs-on: ubuntu-22.04
+      steps:
+        - name: Checkout  
+          uses: actions/checkout@v4
+              
+        - name: Terraform init
+          run: terraform init
+          working-directory: ${{ env.WORKING_DIR }}
+    
+        - name: Terraform workspace select stage or terraform workspace new stage
+          run: terraform workspace select stage || terraform workspace new stage
+          working-directory: ${{ env.WORKING_DIR }}
+    
+        - name: Terraform plan stage
+          if: github.event.inputs.action_type == 'apply'
+          run: terraform plan
+          working-directory: ${{ env.WORKING_DIR }}
+
+        - name: Terraform apply stage 
+          if: github.event.inputs.action_type == 'apply'
+          run: terraform apply -auto-approve
+          working-directory: ${{ env.WORKING_DIR }}
+  
+        - name: Terraform destroy stage 
+          if: github.event.inputs.action_type == 'destroy'
+          run: terraform destroy -auto-approve
+          working-directory: ${{ env.WORKING_DIR }}  
+  
+        - name: Create Pull Request from stage to prod (main)
+          if: github.event.inputs.action_type == 'apply'
+          run: |
+            sudo apt-get install gh -y 
+            gh pr create --base main --head stage --title "Auto PR: Promote stage to prod" \
+            --body "Automatic pull request created by GitHub Actions to promote changes from stage to prod." \
+            --reviewer ${{ env.REVIEWER }} \
+            --assignee ${{ env.ASSIGNEE }}

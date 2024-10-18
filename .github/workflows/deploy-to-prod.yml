@@ -1,0 +1,60 @@
+name: Deploy infrastructure to production
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'emilkle-oppg2/**'
+  workflow_dispatch:
+    inputs:
+      action_type:
+        description: 'What terraform action do you want to perform? (apply/destroy)'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - 'apply'
+          - 'destroy'
+
+env: 
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  WORKING_DIR: .
+  REVIEWER: "emilkle"
+  ASSIGNEE: "emilkle"
+
+jobs:
+  prod_stage:
+    runs-on: ubuntu-22.04
+    environment:
+        name: production  
+    steps:
+      - name: Checkout  
+        uses: actions/checkout@v4
+              
+      - name: Terraform init
+        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+    
+      - name: Terraform workspace select prod or terraform workspace new prod
+        run: terraform workspace select prod || terraform workspace new prod
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Terraform plan prod 
+        if: github.event.inputs.action_type == 'apply'
+        run: terraform plan
+        working-directory: ${{ env.WORKING_DIR }}
+      
+      - name: Terraform apply prod
+        if: github.event.inputs.action_type == 'apply'
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.WORKING_DIR }}
+    
+      - name: Terraform destroy prod 
+        if: github.event.inputs.action_type == 'destroy'
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.WORKING_DIR }}
