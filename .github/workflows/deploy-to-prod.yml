@@ -1,4 +1,4 @@
-name: Deploy infrastructure to production
+name: Deploy Infrastructure to Production
 
 on:
   pull_request:
