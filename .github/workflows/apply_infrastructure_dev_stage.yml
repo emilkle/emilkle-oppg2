@@ -80,10 +80,11 @@ jobs:
   
         - name: Check if 'stage' Branch Exists
           run: |
+            git fetch origin dev 
             if ! git ls-remote --exit-code --heads origin stage; then
               echo "Stage branch does not exist. Creating it now."
-              git checkout main         
-              git pull origin main
+              git checkout dev         
+              git pull origin dev
               git checkout -b stage
               git push origin stage
             else
