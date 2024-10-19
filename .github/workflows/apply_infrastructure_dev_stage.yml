@@ -74,11 +74,23 @@ jobs:
           if: github.event.inputs.action_type == 'destroy'
           run: terraform destroy -auto-approve
           working-directory: ${{ env.WORKING_DIR }}
+
+        - name: Install GitHub CLI
+          run: sudo apt-get install gh -y
   
+        - name: Check if 'stage' Branch Exists
+          run: |
+            if ! git ls-remote --exit-code --heads origin stage; then
+              echo "Stage branch does not exist. Creating it now."
+              git checkout -b stage
+              git push origin stage
+            else
+              echo "Stage branch exists."
+            fi
+
         - name: Create Pull Request from dev to stage
           if: github.event.inputs.action_type == 'apply'
           run: |
-            sudo apt-get install gh -y 
             gh pr create --base stage --head dev --title "Auto PR: Promote dev to stage" \
             --body "Automatic pull request created by GitHub Actions to promote changes from dev to stage." \
             --reviewer ${{ env.REVIEWER }} \

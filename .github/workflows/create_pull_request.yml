@@ -22,6 +22,16 @@ jobs:
       - name: Install GitHub CLI
         run: sudo apt-get install gh -y
 
+      - name: Check if 'dev' Branch Exists
+        run: |
+          if ! git ls-remote --exit-code --heads origin dev; then
+            echo "Dev branch does not exist. Creating it now."
+            git checkout -b dev
+            git push origin dev
+          else
+            echo "Dev branch exists."
+          fi
+
       - name: Create Pull Request to Dev
         run: |
           gh pr create --base dev --head ${{ github.ref_name }} --title "Auto PR: Merge ${{ github.ref_name }} to dev" \
