@@ -45,4 +45,4 @@ jobs:
       - name: Remove Branch After Approval
         if: success()
         run: |
-            gh pr merge --auto --squash --delete-branch --head ${{ github.ref_name }}
+            gh pr merge --auto --squash --delete-branch ${{ github.ref_name }}
