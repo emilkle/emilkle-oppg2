@@ -3,8 +3,8 @@ name: Create Pull Request for Environment Branches
 on:
   push:
     branches:
-      - feature*
-      - fix*
+      - feature
+      - fix
     paths:
       - 'emilkle-oppg2/**'
   workflow_dispatch:
