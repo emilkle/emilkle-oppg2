@@ -26,6 +26,8 @@ jobs:
         run: |
           if ! git ls-remote --exit-code --heads origin dev; then
             echo "Dev branch does not exist. Creating it now."
+            git checkout main         
+            git pull origin main       
             git checkout -b dev
             git push origin dev
           else
