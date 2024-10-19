@@ -9,6 +9,8 @@ on:
 
 env: 
   GH_TOKEN: ${{ github.token }}
+  REVIEWER: "emilkle"
+  ASSIGNEE: "emilkle"
 
 jobs:
   create_pull_request:
@@ -24,8 +26,8 @@ jobs:
         run: |
           gh pr create --base dev --head ${{ github.ref_name }} --title "Auto PR: Merge ${{ github.ref_name }} to dev" \
           --body "Automatic pull request created by GitHub Actions to merge changes from ${{ github.ref_name }} to dev." \
-          --reviewer "emilkle" \
-          --assignee "emilkle"
+          --reviewer ${{ env.REVIEWER }} \
+          --assignee ${{ env.ASSIGNEE }}
           
       - name: Remove Branch After Approval
         if: success()
