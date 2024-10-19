@@ -24,6 +24,7 @@ jobs:
 
       - name: Check if 'dev' Branch Exists
         run: |
+          git fetch origin main 
           if ! git ls-remote --exit-code --heads origin dev; then
             echo "Dev branch does not exist. Creating it now."
             git checkout main         
