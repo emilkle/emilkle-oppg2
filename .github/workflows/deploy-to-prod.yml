@@ -42,27 +42,39 @@ jobs:
         uses: actions/checkout@v4
               
       - name: Terraform init
-        run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+        run: | 
+          for dir in ./emilkle-oppg2/*; do
+            terraform init "$dir"
+          done
     
       - name: Terraform workspace select prod or terraform workspace new prod
-        run: terraform workspace select prod || terraform workspace new prod
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          for dir in ./emilkle-oppg2/*; do
+            cd "$dir"
+            terraform workspace select stage || terraform workspace new stage
+            cd ..
+          done
 
       - name: Terraform plan prod 
         if: github.event.inputs.action_type == 'apply'
-        run: terraform plan
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          for dir in ./emilkle-oppg2/*; do
+            terraform plan "$dir"
+          done
       
       - name: Terraform apply prod
         if: github.event.inputs.action_type == 'apply'
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          for dir in ./emilkle-oppg2/*; do
+            terraform apply -auto-approve "$dir"
+          done
     
       - name: Terraform destroy prod 
         if: github.event.inputs.action_type == 'destroy'
-        run: terraform destroy -auto-approve
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          for dir in ./emilkle-oppg2/*; do
+            terraform destroy -auto-approve "$dir"
+          done
 
       - name: Insert sql data
         if: github.event.inputs.action_type == 'apply'
