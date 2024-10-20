@@ -43,21 +43,21 @@ jobs:
               
         - name: Terraform init
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform init 
             done
           
         - name: Terraform fmt
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform fmt 
             done
 
         - name: Terraform validate
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform validate 
             done
@@ -72,7 +72,7 @@ jobs:
     
         - name: Terraform workspace select dev or terraform workspace new dev 
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform workspace select dev || terraform workspace new dev
               cd ..
@@ -81,7 +81,7 @@ jobs:
         - name: Terraform plan dev 
           if: github.event.inputs.action_type == 'apply'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform plan 
             done
@@ -89,7 +89,7 @@ jobs:
         - name: Terraform apply dev 
           if: github.event.inputs.action_type == 'apply'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform apply -auto-approve 
             done
@@ -97,7 +97,7 @@ jobs:
         - name: Terraform destroy dev 
           if: github.event.inputs.action_type == 'destroy'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform destroy -auto-approve 
             done
@@ -146,14 +146,14 @@ jobs:
               
         - name: Terraform init
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform init
             done 
     
         - name: Terraform workspace select stage or terraform workspace new stage
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform workspace select stage || terraform workspace new stage
               cd ..
@@ -162,7 +162,7 @@ jobs:
         - name: Terraform plan stage
           if: github.event.inputs.action_type == 'apply'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform plan
             done
@@ -170,7 +170,7 @@ jobs:
         - name: Terraform apply stage 
           if: github.event.inputs.action_type == 'apply'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform apply -auto-approve
             done
@@ -178,7 +178,7 @@ jobs:
         - name: Terraform destroy stage 
           if: github.event.inputs.action_type == 'destroy'
           run: |
-            for dir in ./emilkle-oppg2/*; do
+            for dir in ${{ env.WORKING_DIR }}/*; do
               cd "$dir"
               terraform destroy -auto-approve
             done
