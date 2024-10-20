@@ -9,7 +9,7 @@ terraform {
     resource_group_name  = "rg-backend-eks"
     storage_account_name = "sabackendekszqreqedcf9"
     container_name       = "tfstate"
-    key                  = "opera-terra-web-app.tfstate"
+    key                  = "opera-terra/web-app/global/global.tfstate"
   }
 }
 
