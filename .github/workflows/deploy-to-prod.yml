@@ -23,6 +23,11 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   GH_TOKEN: ${{ github.token }}
+  AZURE_SQL_SERVER_NAME: "mssql-e-commerce-db-server"
+  AZURE_SQL_DATABASE_NAME: "mssql-e-commerce-db"
+  AZURE_SQL_ADMIN_USER: "4dm1n157r470r"
+  AZURE_SQL_ADMIN_PASSWORD: "4-v3ry-53cr37-p455w0rd"
+  SQL_FILE: ./emilkle-oppg2/sql/product_and_user_data.sql
   WORKING_DIR: .
   REVIEWER: "emilkle"
   ASSIGNEE: "emilkle"
@@ -58,3 +63,14 @@ jobs:
         if: github.event.inputs.action_type == 'destroy'
         run: terraform destroy -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Insert sql data
+        if: github.event.inputs.action_type == 'apply'
+        run: |
+          # Execute the SQL script
+          az sql db query \
+            --server ${{ env.AZURE_SQL_SERVER_NAME }} \
+            --database ${{ env.AZURE_SQL_DATABASE_NAME }} \
+            --admin-user ${{ env.AZURE_SQL_ADMIN_USER }} \
+            --admin-password ${{ env.AZURE_SQL_ADMIN_PASSWORD }} \
+            --query-file ${{ env.SQL_FILE }}
