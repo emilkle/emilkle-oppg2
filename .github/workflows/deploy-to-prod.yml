@@ -40,6 +40,13 @@ jobs:
     steps:
       - name: Checkout  
         uses: actions/checkout@v4
+
+      - name: Azure CLI Login
+        run: |
+          az login --service-principal \
+            --username ${{ env.ARM_CLIENT_ID }} \
+            --password ${{ env.ARM_CLIENT_SECRET }} \
+            --tenant ${{ env.ARM_TENANT_ID }}  
               
       - name: Terraform init
         run: | 
