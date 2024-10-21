@@ -1,0 +1,29 @@
+variable "rgname" {
+    description = "The name of the Resource Group in which the resources will be created."
+    type        = string
+    default     = "rg-tf-infra"
+}
+
+variable "location" {
+    description = "The Azure Region in which all resources will be created."
+    type        = string
+    default     = "northeurope"
+}
+
+variable "saname" {
+    description = "The name of the Storage Account."
+    type        = string
+    default     = "satfstorageoperaterraeks"
+}
+
+variable "scname" {
+    description = "The name of the Storage Container."
+    type        = string
+    default     = "sctfstorage"
+}
+
+variable "blobname" {
+    description = "The name of the Blob."
+    type        = string
+    default     = "product-image-blob-storage"
+}

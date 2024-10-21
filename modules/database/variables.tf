@@ -21,3 +21,14 @@ variable "mssqldbname" {
     type        = string
     default     = "mssql-e-commerce-db"
 }
+
+variable "sa_primary_blob_endpoint" {
+  type        = string
+  description = "The primary blob endpoint of the storage account"
+}
+
+variable "sa_primary_access_key" {
+  type        = string
+  description = "The primary access key of the storage account"
+  sensitive   = true
+}
