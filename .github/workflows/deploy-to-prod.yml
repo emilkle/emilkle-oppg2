@@ -43,10 +43,7 @@ jobs:
 
       - name: Azure CLI Login
         run: |
-          az login --service-principal \
-            --username ${{ env.ARM_CLIENT_ID }} \
-            --password ${{ env.ARM_CLIENT_SECRET }} \
-            --tenant ${{ env.ARM_TENANT_ID }}  
+          az login --service-principal -u ${{ env.ARM_CLIENT_ID }} -p ${{ env.ARM_CLIENT_SECRET }} --tenant ${{ env.ARM_TENANT_ID }}  
               
       - name: Terraform init
         run: | 
