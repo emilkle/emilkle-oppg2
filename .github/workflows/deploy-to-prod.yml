@@ -50,6 +50,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform init
+            fi  
           done
     
       - name: Terraform workspace select prod or terraform workspace new prod
@@ -62,6 +63,7 @@ jobs:
               cd "$dir"
               terraform workspace select stage || terraform workspace new stage
               cd ..
+            fi
           done
 
       - name: Terraform plan prod 
@@ -74,6 +76,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform plan
+            fi  
           done
       
       - name: Terraform apply prod
@@ -86,6 +89,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform apply -auto-approve
+            f1  
           done
     
       - name: Terraform destroy prod 
@@ -98,6 +102,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform destroy -auto-approve
+            fi  
           done
 
       - name: Insert sql data
