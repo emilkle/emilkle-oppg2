@@ -44,40 +44,60 @@ jobs:
       - name: Terraform init
         run: | 
           for dir in ${{ env.WORKING_DIR }}/*; do
-            cd "$dir"
-            terraform init
+            if { [ "$(basename "$dir")" == "application_plattform" ] || 
+                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
+                                [ "$(basename "$dir")" == "global" ] ||
+                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
+              cd "$dir"
+              terraform init
           done
     
       - name: Terraform workspace select prod or terraform workspace new prod
         run: |
           for dir in ${{ env.WORKING_DIR }}/*; do
-            cd "$dir"
-            terraform workspace select stage || terraform workspace new stage
-            cd ..
+            if { [ "$(basename "$dir")" == "application_plattform" ] || 
+                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
+                                [ "$(basename "$dir")" == "global" ] ||
+                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
+              cd "$dir"
+              terraform workspace select stage || terraform workspace new stage
+              cd ..
           done
 
       - name: Terraform plan prod 
         if: github.event.inputs.action_type == 'apply'
         run: |
           for dir in ${{ env.WORKING_DIR }}/*; do
-            cd "$dir"
-            terraform plan
+            if { [ "$(basename "$dir")" == "application_plattform" ] || 
+                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
+                                [ "$(basename "$dir")" == "global" ] ||
+                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
+              cd "$dir"
+              terraform plan
           done
       
       - name: Terraform apply prod
         if: github.event.inputs.action_type == 'apply'
         run: |
           for dir in ${{ env.WORKING_DIR }}/*; do
-            cd "$dir"
-            terraform apply -auto-approve
+            if { [ "$(basename "$dir")" == "application_plattform" ] || 
+                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
+                                [ "$(basename "$dir")" == "global" ] ||
+                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
+              cd "$dir"
+              terraform apply -auto-approve
           done
     
       - name: Terraform destroy prod 
         if: github.event.inputs.action_type == 'destroy'
         run: |
           for dir in ${{ env.WORKING_DIR }}/*; do
-            cd "$dir"
-            terraform destroy -auto-approve
+            if { [ "$(basename "$dir")" == "application_plattform" ] || 
+                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
+                                [ "$(basename "$dir")" == "global" ] ||
+                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
+              cd "$dir"
+              terraform destroy -auto-approve
           done
 
       - name: Insert sql data
