@@ -54,6 +54,7 @@ jobs:
                                 [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform init 
+                cd ..
               fi  
             done
           
@@ -66,6 +67,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform fmt 
+                cd ..
               fi
             done
 
@@ -78,6 +80,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform validate 
+                cd ..
               fi  
             done
   
@@ -112,6 +115,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform plan 
+                cd ..
               fi  
             done
     
@@ -125,6 +129,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform apply -auto-approve 
+                cd ..
               fi
             done
   
@@ -138,6 +143,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform destroy -auto-approve
+                cd ..
               fi   
             done
 
@@ -196,6 +202,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform init
+                cd ..
               fi  
             done 
     
@@ -222,6 +229,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform plan
+                cd ..
               fi
             done
 
@@ -235,6 +243,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform apply -auto-approve
+                cd ..
               fi  
             done
   
@@ -248,6 +257,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform destroy -auto-approve
+                cd ..
               fi  
             done
   
