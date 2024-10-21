@@ -1,4 +1,4 @@
-name: Apply Infrastructure to dev and stage Workspaces
+name: Apply Infrastructure to dev and staging Workspaces
 
 on:
   pull_request:
@@ -161,24 +161,24 @@ jobs:
         - name: Install GitHub CLI
           run: sudo apt-get install gh -y
   
-        - name: Check if 'stage' Branch Exists
+        - name: Check if 'staging' Branch Exists
           run: |
             git fetch origin dev 
-            if ! git ls-remote --exit-code --heads origin stage; then
-              echo "Stage branch does not exist. Creating it now."
+            if ! git ls-remote --exit-code --heads origin staging; then
+              echo "Staging branch does not exist. Creating it now."
               git checkout dev         
               git pull origin dev
-              git checkout -b stage
-              git push origin stage
+              git checkout -b staging
+              git push origin staging
             else
-              echo "Stage branch exists."
+              echo "Staging branch exists."
             fi
 
-        - name: Create Pull Request from dev to stage
+        - name: Create Pull Request from dev to staging
           if: github.event.inputs.action_type == 'apply'
           run: |
-            gh pr create --base stage --head dev --title "Auto PR: Promote dev to stage" \
-            --body "Automatic pull request created by GitHub Actions to promote changes from dev to stage." \
+            gh pr create --base staging --head dev --title "Auto PR: Promote dev to staging" \
+            --body "Automatic pull request created by GitHub Actions to promote changes from dev to staging." \
             --reviewer ${{ env.REVIEWER }} \
             --assignee ${{ env.ASSIGNEE }}
   
@@ -214,12 +214,12 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
-                terraform workspace select stage || terraform workspace new stage
+                terraform workspace select staging || terraform workspace new staging
                 cd ..
               fi  
             done
     
-        - name: Terraform plan stage
+        - name: Terraform plan staging
           if: github.event.inputs.action_type == 'apply'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
@@ -233,7 +233,7 @@ jobs:
               fi
             done
 
-        - name: Terraform apply stage 
+        - name: Terraform apply staging 
           if: github.event.inputs.action_type == 'apply'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
@@ -247,7 +247,7 @@ jobs:
               fi  
             done
   
-        - name: Terraform destroy stage 
+        - name: Terraform destroy staging 
           if: github.event.inputs.action_type == 'destroy'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
@@ -261,11 +261,11 @@ jobs:
               fi  
             done
   
-        - name: Create Pull Request from stage to prod (main)
+        - name: Create Pull Request from staging to prod (main)
           if: github.event.inputs.action_type == 'apply'
           run: |
             sudo apt-get install gh -y 
-            gh pr create --base main --head stage --title "Auto PR: Promote stage to prod" \
-            --body "Automatic pull request created by GitHub Actions to promote changes from stage to prod." \
+            gh pr create --base main --head staging --title "Auto PR: Promote staging to prod" \
+            --body "Automatic pull request created by GitHub Actions to promote changes from staging to prod." \
             --reviewer ${{ env.REVIEWER }} \
             --assignee ${{ env.ASSIGNEE }}
