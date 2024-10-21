@@ -21,3 +21,5 @@ resource "azurerm_mssql_database" "mssql-e-commerce-db" {
     prevent_destroy = true
   }
 }
+
+# Workflow test
