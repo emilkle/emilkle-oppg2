@@ -32,15 +32,21 @@ module "app_service" {
 }
 
 module "database" {
-  source = "../modules/database"
-  rgname = azurerm_resource_group.infra-rg.name
-  location = azurerm_resource_group.infra-rg.location
-  mssqldbserevername = var.mssqldbserevername
-  mssqldbname = var.mssqldbname
+  source                   = "../modules/database"
+  rgname                   = azurerm_resource_group.infra-rg.name
+  location                 = azurerm_resource_group.infra-rg.location
+  mssqldbserevername       = var.mssqldbserevername
+  mssqldbname              = var.mssqldbname
+  sa_primary_blob_endpoint = module.storage.sa_primary_blob_endpoint
+  sa_primary_access_key    = module.storage.sa_primary_access_key
 }
 
 module "storage" {
-  source = "../modules/storage"
+  source   = "../modules/storage"
+  rgname   = azurerm_resource_group.infra-rg.name
+  location = azurerm_resource_group.infra-rg.location
+  saname   = var.saname
+  scname   = var.scname
 }
 
 module "nn" {
