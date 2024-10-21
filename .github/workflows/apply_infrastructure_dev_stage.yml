@@ -50,6 +50,7 @@ jobs:
                                 [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform init 
+              fi  
             done
           
         - name: Terraform fmt
@@ -61,6 +62,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform fmt 
+              fi
             done
 
         - name: Terraform validate
@@ -72,6 +74,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform validate 
+              fi  
             done
   
         - uses: actions/checkout@master
@@ -92,6 +95,7 @@ jobs:
                 cd "$dir"
                 terraform workspace select dev || terraform workspace new dev
                 cd ..
+              fi  
             done
          
         - name: Terraform plan dev 
@@ -104,6 +108,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform plan 
+              fi  
             done
     
         - name: Terraform apply dev 
@@ -116,6 +121,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform apply -auto-approve 
+              fi
             done
   
         - name: Terraform destroy dev 
@@ -127,7 +133,8 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
-                terraform destroy -auto-approve 
+                terraform destroy -auto-approve
+              fi   
             done
 
         - name: Insert sql data
@@ -181,6 +188,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform init
+              fi  
             done 
     
         - name: Terraform workspace select stage or terraform workspace new stage
@@ -193,6 +201,7 @@ jobs:
                 cd "$dir"
                 terraform workspace select stage || terraform workspace new stage
                 cd ..
+              fi  
             done
     
         - name: Terraform plan stage
@@ -205,6 +214,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform plan
+              fi
             done
 
         - name: Terraform apply stage 
@@ -217,6 +227,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform apply -auto-approve
+              fi  
             done
   
         - name: Terraform destroy stage 
@@ -229,6 +240,7 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform destroy -auto-approve
+              fi  
             done
   
         - name: Create Pull Request from stage to prod (main)
