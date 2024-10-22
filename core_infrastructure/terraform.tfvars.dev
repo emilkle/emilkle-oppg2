@@ -1,4 +1,4 @@
-rgname             = "rg-tf-infra-eks-dev"
+rgname             = "rg-tf-core-infra-eks-dev"
 location           = "northeurope"
 mssqldbserevername = "mssql-e-commerce-db-server-dev"
 mssqldbname        = "mssql-e-commerce-db-dev"
