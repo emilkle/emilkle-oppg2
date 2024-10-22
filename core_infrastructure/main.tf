@@ -47,6 +47,7 @@ module "storage" {
   location = azurerm_resource_group.infra-rg.location
   saname   = var.saname
   scname   = var.scname
+  blobname = var.blobname
 }
 
 module "nn" {
