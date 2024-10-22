@@ -91,6 +91,7 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
+                terraform init
                 terraform workspace select dev || terraform workspace new dev
                 terraform destroy -auto-approve
                 cd ..
@@ -158,6 +159,7 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
+                terraform init
                 terraform workspace select staging || terraform workspace new staging
                 terraform destroy -auto-approve
                 cd ..
