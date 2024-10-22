@@ -76,7 +76,7 @@ jobs:
                 cd "$dir"
                 terraform init
                 terraform workspace select dev || terraform workspace new dev
-                terraform plan -var-file="terraform.tfvars.dev"
+                terraform plan -var-file="${{ env.WORKING_DIR }}/$(basename "$dir")/terraform.tfvars.dev"
                 terraform apply -auto-approve 
                 cd ..
               fi  
@@ -144,7 +144,7 @@ jobs:
                 cd "$dir"
                 terraform init
                 terraform workspace select staging || terraform workspace new staging
-                terraform plan -var-file="terraform.tfvars.staging" 
+                terraform plan -var-file="${{ env.WORKING_DIR }}/$(basename "$dir")/terraform.tfvars.staging" 
                 terraform apply -auto-approve
                 cd ..
               fi  

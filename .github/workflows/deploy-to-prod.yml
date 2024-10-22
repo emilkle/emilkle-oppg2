@@ -51,7 +51,7 @@ jobs:
               cd "$dir"
               terraform workspace select prod || terraform workspace new prod
               terraform init
-              terraform plan -var-file="terraform.tfvars.prod"
+              terraform plan -var-file="${{ env.WORKING_DIR }}/$(basename "$dir")/terraform.tfvars.prod"
               terraform apply -auto-approve 
               cd ..
             fi
@@ -67,6 +67,7 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
+              terraform init
               terraform workspace select prod || terraform workspace new prod
               terraform destroy -auto-approve
               cd ..
