@@ -102,7 +102,7 @@ jobs:
         - name: Check if 'staging' Branch Exists
           if: github.event.inputs.action_type == 'apply'
           run: |
-            git fetch origin dev 
+            git fetch origin main 
             if ! git ls-remote --exit-code --heads origin staging; then
               echo "Staging branch does not exist. Creating it now."
               git checkout main         
