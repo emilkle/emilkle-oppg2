@@ -48,8 +48,8 @@ jobs:
                                 [ "$(basename "$dir")" == "core_infrastructure" ] || 
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
-              terraform workspace select prod || terraform workspace new prod
               terraform init
+              terraform workspace select prod || terraform workspace new prod
               terraform plan -out=main-prod.tfplan -var-file="terraform.tfvars.prod"
               terraform apply "main-prod.tfplan" 
               cd ..
