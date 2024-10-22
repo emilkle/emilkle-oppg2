@@ -96,9 +96,11 @@ jobs:
             done
 
         - name: Install GitHub CLI
+          if: github.event.inputs.action_type == 'apply'
           run: sudo apt-get install gh -y
   
         - name: Check if 'staging' Branch Exists
+          if: github.event.inputs.action_type == 'apply'
           run: |
             git fetch origin dev 
             if ! git ls-remote --exit-code --heads origin staging; then
