@@ -51,7 +51,7 @@ jobs:
               terraform workspace select prod || terraform workspace new prod
               terraform init
               terraform plan -out=main-prod.tfplan -var-file="terraform.tfvars.prod"
-              terraform apply "main-prod.tfplan" -auto-approve 
+              terraform apply "main-prod.tfplan" 
               cd ..
             fi
           done

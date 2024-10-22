@@ -75,7 +75,7 @@ jobs:
                 terraform init
                 terraform workspace select dev || terraform workspace new dev
                 terraform plan -out=main-dev.tfplan -var-file="terraform.tfvars.dev"
-                terraform apply "main-dev.tfplan" -auto-approve 
+                terraform apply "main-dev.tfplan"
                 cd ..
               fi  
             done
@@ -143,7 +143,7 @@ jobs:
                 terraform init
                 terraform workspace select staging || terraform workspace new staging
                 terraform plan -out=main-staging.tfplan -var-file="terraform.tfvars.staging"
-                terraform apply "main-staging.tfplan" -auto-approve 
+                terraform apply "main-staging.tfplan" 
                 cd ..
               fi  
             done
