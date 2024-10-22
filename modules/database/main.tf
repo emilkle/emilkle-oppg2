@@ -17,11 +17,6 @@ resource "azurerm_mssql_database" "mssql-e-commerce-db" {
   max_size_gb  = 2
   sku_name     = "S0"
   enclave_type = "VBS"
-
-  # prevent the possibility of accidental data loss
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "azurerm_mssql_database_extended_auditing_policy" "example" {
