@@ -19,8 +19,8 @@ provider "azurerm" {
 }
 
 module "global" {
-  source = "../global"
-  rgname = var.rgname
+  source   = "../global"
+  rgname   = var.rgname
   location = var.location
 }
 
