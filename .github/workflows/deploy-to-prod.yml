@@ -46,7 +46,6 @@ jobs:
           for dir in ${{ env.WORKING_DIR }}/*; do
             if { [ "$(basename "$dir")" == "application_plattform" ] || 
                                 [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform workspace select prod || terraform workspace new prod
@@ -64,7 +63,6 @@ jobs:
           for dir in ${{ env.WORKING_DIR }}/*; do
             if { [ "$(basename "$dir")" == "application_plattform" ] || 
                                 [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
               cd "$dir"
               terraform init

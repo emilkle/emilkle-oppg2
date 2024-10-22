@@ -18,8 +18,9 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "infra-rg" {
-  name     = var.rgname
+module "global" {
+  source = "../global"
+  rgname = var.rgname
   location = var.location
 }
 
@@ -33,8 +34,8 @@ module "app_service" {
 
 module "database" {
   source                   = "../modules/database"
-  rgname                   = azurerm_resource_group.infra-rg.name
-  location                 = azurerm_resource_group.infra-rg.location
+  rgname                   = module.global.rgname
+  location                 = module.global.location
   mssqldbserevername       = var.mssqldbserevername
   mssqldbname              = var.mssqldbname
   sa_primary_blob_endpoint = module.storage.sa_primary_blob_endpoint
@@ -43,8 +44,8 @@ module "database" {
 
 module "storage" {
   source   = "../modules/storage"
-  rgname   = azurerm_resource_group.infra-rg.name
-  location = azurerm_resource_group.infra-rg.location
+  rgname   = module.global.rgname
+  location = module.global.location
   saname   = var.saname
   scname   = var.scname
   blobname = var.blobname

@@ -1,3 +1,4 @@
+# Global variables
 variable "rgname" {
   description = "The name of the Resource Group in which the resources will be created."
   type        = string
