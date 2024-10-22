@@ -23,11 +23,6 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   GH_TOKEN: ${{ github.token }}
-  AZURE_SQL_SERVER_NAME: "mssql-e-commerce-db-server"
-  AZURE_SQL_DATABASE_NAME: "mssql-e-commerce-db"
-  AZURE_SQL_ADMIN_USER: "4dm1n157r470r"
-  AZURE_SQL_ADMIN_PASSWORD: "4-v3ry-53cr37-p455w0rd"
-  SQL_FILE: ./emilkle-oppg2/sql/product_and_user_data.sql
   WORKING_DIR: .
   REVIEWER: "emilkle"
   ASSIGNEE: "emilkle"
@@ -45,7 +40,8 @@ jobs:
           run: |
             az login --service-principal -u ${{ env.ARM_CLIENT_ID }} -p ${{ env.ARM_CLIENT_SECRET }} --tenant ${{ env.ARM_TENANT_ID }}
               
-        - name: Terraform init
+        - name: Terraform init, fmt and validate before deploying to each workspace
+          if: github.event.inputs.action_type == 'apply'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
               if { [ "$(basename "$dir")" == "application_plattform" ] || 
@@ -54,37 +50,14 @@ jobs:
                                 [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform init 
+                terraform fmt
+                terraform validate
                 cd ..
               fi  
             done
           
-        - name: Terraform fmt
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
-                terraform fmt 
-                cd ..
-              fi
-            done
-
-        - name: Terraform validate
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
-                terraform validate 
-                cd ..
-              fi  
-            done
-  
         - uses: actions/checkout@master
+          if: github.event.inputs.action_type == 'apply'
         - name: tfsec
     
           uses: aquasecurity/tfsec-action@v1.0.3
@@ -92,7 +65,8 @@ jobs:
             working_directory: ${{ env.WORKING_DIR }}
             github_token: ${{ env.GH_TOKEN }}
     
-        - name: Terraform workspace select dev or terraform workspace new dev 
+        - name: Terraform init, plan, and apply to dev workspace
+          if: github.event.inputs.action_type == 'apply'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
               if { [ "$(basename "$dir")" == "application_plattform" ] || 
@@ -101,36 +75,11 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform workspace select dev || terraform workspace new dev
-                cd ..
-              fi  
-            done
-         
-        - name: Terraform plan dev 
-          if: github.event.inputs.action_type == 'apply'
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
-                terraform plan 
-                cd ..
-              fi  
-            done
-    
-        - name: Terraform apply dev 
-          if: github.event.inputs.action_type == 'apply'
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
+                terraform init
+                terraform plan -var-file="terraform.tfvars.dev"
                 terraform apply -auto-approve 
                 cd ..
-              fi
+              fi  
             done
   
         - name: Terraform destroy dev 
@@ -142,21 +91,11 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
+                terraform workspace select dev || terraform workspace new dev
                 terraform destroy -auto-approve
                 cd ..
               fi   
             done
-
-        - name: Insert sql data
-          if: github.event.inputs.action_type == 'apply'
-          run: |
-            # Execute the SQL script
-            az sql db query \
-              --server ${{ env.AZURE_SQL_SERVER_NAME }} \
-              --database ${{ env.AZURE_SQL_DATABASE_NAME }} \
-              --admin-user ${{ env.AZURE_SQL_ADMIN_USER }} \
-              --admin-password ${{ env.AZURE_SQL_ADMIN_PASSWORD }} \
-              --query-file ${{ env.SQL_FILE }}
 
         - name: Install GitHub CLI
           run: sudo apt-get install gh -y
@@ -192,21 +131,9 @@ jobs:
         - name: Azure CLI Login
           run: |
             az login --service-principal -u ${{ env.ARM_CLIENT_ID }} -p ${{ env.ARM_CLIENT_SECRET }} --tenant ${{ env.ARM_TENANT_ID }}  
-              
-        - name: Terraform init
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
-                terraform init
-                cd ..
-              fi  
-            done 
     
-        - name: Terraform workspace select stage or terraform workspace new stage
+        - name: Terraform init, plan, and apply to staging workspace
+          if: github.event.inputs.action_type == 'apply'
           run: |
             for dir in ${{ env.WORKING_DIR }}/*; do
               if { [ "$(basename "$dir")" == "application_plattform" ] || 
@@ -215,33 +142,8 @@ jobs:
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
                 terraform workspace select staging || terraform workspace new staging
-                cd ..
-              fi  
-            done
-    
-        - name: Terraform plan staging
-          if: github.event.inputs.action_type == 'apply'
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
-                terraform plan
-                cd ..
-              fi
-            done
-
-        - name: Terraform apply staging 
-          if: github.event.inputs.action_type == 'apply'
-          run: |
-            for dir in ${{ env.WORKING_DIR }}/*; do
-              if { [ "$(basename "$dir")" == "application_plattform" ] || 
-                                [ "$(basename "$dir")" == "core_infrastructure" ] || 
-                                [ "$(basename "$dir")" == "global" ] ||
-                                  [ "$(basename "$dir")" == "nn-deployment" ]; }; then
-                cd "$dir"
+                terraform init
+                terraform plan -var-file="terraform.tfvars.staging" 
                 terraform apply -auto-approve
                 cd ..
               fi  
@@ -256,6 +158,7 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
+                terraform workspace select staging || terraform workspace new staging
                 terraform destroy -auto-approve
                 cd ..
               fi  
