@@ -13,17 +13,17 @@ variable "location" {
 variable "saname" {
     description = "The name of the Storage Account."
     type        = string
-    default     = "satfstorageoperaterraeks"
+    default = "satfoperaterraeks"
 }
 
 variable "scname" {
     description = "The name of the Storage Container."
     type        = string
-    default     = "sctfstorage"
+    default = "sctfoperaterraeks"
 }
 
 variable "blobname" {
     description = "The name of the Blob."
     type        = string
-    default     = "product-image-blob-storage"
+    default = "product-image-blob-storage"
 }

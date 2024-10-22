@@ -1,0 +1,7 @@
+rgname             = "rg-tf-infra-eks-prod"
+location           = "northeurope"
+mssqldbserevername = "mssql-e-commerce-db-server-prod"
+mssqldbname        = "mssql-e-commerce-db-prod"
+saname             = "satfoperaterraeksprod"
+scname             = "sctfoperaterraeksprod"
+blobname           = "product-image-blob-storage-prod"
