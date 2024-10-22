@@ -74,8 +74,8 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
-                terraform workspace select dev || terraform workspace new dev
                 terraform init
+                terraform workspace select dev || terraform workspace new dev
                 terraform plan -var-file="terraform.tfvars.dev"
                 terraform apply -auto-approve 
                 cd ..
@@ -141,8 +141,8 @@ jobs:
                                 [ "$(basename "$dir")" == "global" ] ||
                                   [ "$(basename "$dir")" == "nn-deployment" ]; }; then
                 cd "$dir"
-                terraform workspace select staging || terraform workspace new staging
                 terraform init
+                terraform workspace select staging || terraform workspace new staging
                 terraform plan -var-file="terraform.tfvars.staging" 
                 terraform apply -auto-approve
                 cd ..
