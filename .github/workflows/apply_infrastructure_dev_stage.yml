@@ -105,8 +105,8 @@ jobs:
             git fetch origin dev 
             if ! git ls-remote --exit-code --heads origin staging; then
               echo "Staging branch does not exist. Creating it now."
-              git checkout dev         
-              git pull origin dev
+              git checkout main         
+              git pull origin main       
               git checkout -b staging
               git push origin staging
             else
