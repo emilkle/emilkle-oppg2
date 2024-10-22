@@ -120,6 +120,11 @@ jobs:
             --body "Automatic pull request created by GitHub Actions to promote changes from dev to staging." \
             --reviewer ${{ env.REVIEWER }} \
             --assignee ${{ env.ASSIGNEE }}
+
+        - name: Remove Branch After Approval
+          if: success()
+          run: |
+              gh pr merge --auto --squash --delete-branch dev
   
     stage_prod:
       needs: dev_stage
@@ -171,3 +176,8 @@ jobs:
             --body "Automatic pull request created by GitHub Actions to promote changes from staging to prod." \
             --reviewer ${{ env.REVIEWER }} \
             --assignee ${{ env.ASSIGNEE }}
+
+        - name: Remove Branch After Approval
+          if: success()
+          run: |
+              gh pr merge --auto --squash --delete-branch staging
