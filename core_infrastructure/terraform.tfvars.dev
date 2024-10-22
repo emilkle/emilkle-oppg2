@@ -3,6 +3,6 @@ location           = "northeurope"
 mssqldbserevername = "mssql-e-commerce-db-server-dev"
 mssqldbname        = "mssql-e-commerce-db-dev"
 saname             = "satfoperaterraeksdev"
-scname             = "sctfoperaterraekdev"
+scname             = "sctfoperaterraeksdev"
 blobname           = "product-image-blob-storage-dev"
 
